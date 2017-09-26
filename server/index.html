@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: whitesmoke; padding: 20px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 20px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 20px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 20px; }
+      #messages li:nth-child(odd) { background: whitesmoke; }
+    </style>
+  </head>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+  $(function () {
+    var socket = io();
+    $('form').submit(function(){
+      socket.emit('twitch', $('#m').val());
+      $('#m').val('');
+      return false;
+    });
+    socket.on('chat', function(data){
+      //for some reason 'values' gets appended here
+      console.log("i got a chat");
+      $('#messages').append($('<li>').text(data.values.username + ': ' + data.values.message));
+    });
+  });
+</script>
+
+  <body>
+    <ul id="messages"></ul>
+    <form action="">
+      <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+  </body>
+</html>
